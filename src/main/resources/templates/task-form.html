@@ -1,0 +1,86 @@
+<!doctype html>
+<html
+  lang="ru"
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{fragments/layout :: layout(~{::main})}"
+>
+  <main>
+    <section class="page-heading">
+      <div>
+        <a class="back-link" href="/tasks"
+          ><i data-lucide="arrow-left"></i>Мои задачи</a
+        >
+        <h1 th:text="${pageTitle}"></h1>
+      </div>
+    </section>
+    <section class="panel form-panel">
+      <form
+        method="post"
+        th:action="${taskId == null} ? @{/tasks} : @{/tasks/{id}(id=${taskId})}"
+        th:object="${taskForm}"
+        class="stack-form"
+      >
+        <div class="form-errors" th:if="${#fields.hasAnyErrors()}" role="alert">
+          <p th:each="error : ${#fields.allErrors()}" th:text="${error}"></p>
+        </div>
+        <label
+          >Название задачи<input
+            th:field="*{title}"
+            required
+            maxlength="160"
+            placeholder="Что нужно сделать?"
+            autofocus /></label
+        ><label
+          >Описание <span class="optional">необязательно</span
+          ><textarea
+            th:field="*{description}"
+            maxlength="4000"
+            rows="5"
+            placeholder="Добавьте контекст, чтобы было проще начать…"
+          ></textarea>
+        </label>
+        <div class="form-grid">
+          <label
+            >Срок выполнения<input type="date" th:field="*{dueDate}" /></label
+          ><label
+            >Приоритет<select th:field="*{priority}">
+              <option
+                th:each="p : ${T(com.taskflow.entity.Priority).values()}"
+                th:value="${p}"
+                th:text="${p.label}"
+              ></option></select
+          ></label>
+        </div>
+        <label
+          >Категория<select th:field="*{categoryId}">
+            <option value="">Без категории</option>
+            <option
+              th:each="category : ${userCategories}"
+              th:value="${category.id}"
+              th:text="${category.name}"
+            ></option></select
+        ></label>
+        <div class="form-actions">
+          <a href="/tasks" class="button secondary">Отмена</a
+          ><button class="button primary" type="submit">
+            <i data-lucide="check"></i
+            ><span
+              th:text="${taskId == null} ? 'Создать задачу' : 'Сохранить изменения'"
+            ></span>
+          </button>
+        </div>
+      </form>
+      <form
+        th:if="${taskId != null}"
+        th:action="@{/tasks/{id}/delete(id=${taskId})}"
+        method="post"
+        class="delete-task-form"
+        data-confirm="Удалить эту задачу? Восстановить её не получится."
+      >
+        <button type="submit" class="button danger-ghost">
+          <i data-lucide="trash-2"></i>Удалить задачу
+        </button>
+      </form>
+    </section>
+  </main>
+</html>

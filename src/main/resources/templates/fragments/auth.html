@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <aside class="auth-story" th:fragment="story">
+      <a class="brand" href="/login">
+        <img src="/icons/logo.svg" width="38" height="38" alt="" />TaskFlow
+      </a>
+      <span class="auth-edition">Личный планировщик</span>
+      <h2 class="auth-story-title">Дела<br />по порядку</h2>
+      <p>План на день, календарь и 25 минут фокуса на одной задаче.</p>
+      <figure class="auth-sample" aria-label="Пример плана на день">
+        <figcaption>Пример плана</figcaption>
+        <div class="auth-sample-row"><i data-lucide="circle-check"></i><span>Разобрать почту</span><small>Готово</small></div>
+        <div class="auth-sample-row"><i data-lucide="circle"></i><span>Подготовить заметки</span><small>Сегодня</small></div>
+        <div class="auth-sample-row"><i data-lucide="timer"></i><span>Поработать над проектом</span><small>25 мин</small></div>
+      </figure>
+    </aside>
+  </body>
+</html>

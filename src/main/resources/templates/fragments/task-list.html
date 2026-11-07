@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div th:fragment="list(items)" class="task-list">
+      <article
+        class="task-row"
+        th:each="task : ${items}"
+        th:classappend="${task.completed} ? 'is-completed'"
+      >
+        <form
+          th:action="@{/tasks/{id}/toggle(id=${task.id})}"
+          method="post"
+          class="toggle-task"
+        >
+          <button
+            class="task-check"
+            type="submit"
+            th:classappend="${task.completed} ? 'checked'"
+            th:aria-label="${task.completed} ? 'Вернуть в активные: ' + ${task.title} : 'Завершить: ' + ${task.title}"
+          >
+            <i data-lucide="check" th:if="${task.completed}"></i>
+          </button>
+        </form>
+        <a class="task-main" th:href="@{/tasks/{id}/edit(id=${task.id})}"
+          ><strong class="task-title" th:text="${task.title}"></strong
+          ><span class="task-meta"
+            ><span class="category-label" th:if="${task.category != null}"
+              ><span
+                class="color-dot"
+                th:style="'--category-color:' + ${task.category.color}"
+              ></span
+              ><span th:text="${task.category.name}"></span></span
+            ><span
+              class="task-date"
+              th:if="${task.dueDate != null}"
+              th:classappend="${task.isOverdue(today)} ? 'overdue' : (${task.dueDate == today} ? 'due-today' : '')"
+              ><i data-lucide="calendar"></i
+              ><span
+                th:text="${task.dueDate == today} ? 'Сегодня' : ${#temporals.format(task.dueDate, 'd MMM')}"
+              ></span
+              ><span th:if="${task.isOverdue(today)}">· просрочено</span></span
+            ></span
+          ></a
+        >
+        <span
+          class="priority-badge"
+          th:classappend="${#strings.toLowerCase(task.priority.name())}"
+          th:title="'Приоритет: ' + ${task.priority.label}"
+          ><i data-lucide="flag"></i
+          ><span th:text="${task.priority.label}"></span
+        ></span>
+        <a
+          class="icon-button task-edit"
+          th:href="@{/tasks/{id}/edit(id=${task.id})}"
+          aria-label="Редактировать задачу"
+          ><i data-lucide="chevron-right"></i
+        ></a>
+      </article>
+      <div class="empty-state" th:if="${#lists.isEmpty(items)}">
+        <span class="empty-icon"><i data-lucide="check-check"></i></span>
+        <h3>Задач пока нет</h3>
+        <p>Укажите срок, чтобы увидеть задачу в календаре.</p>
+        <a href="/tasks/new" class="button secondary open-task"
+          ><i data-lucide="plus"></i>Добавить задачу</a
+        >
+      </div>
+    </div>
+  </body>
+</html>

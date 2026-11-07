@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragments/layout :: head(${resetMode ? 'Новый пароль' : 'Подтверждение email'})}"></head>
+  <body class="auth-body auth-compact">
+    <main class="auth-main">
+      <a class="brand auth-mobile-brand" href="/login">
+        <img src="/icons/logo.svg" width="32" height="32" alt="" />TaskFlow
+      </a>
+      <div class="auth-form-wrap">
+        <h1 th:text="${resetMode ? 'Новый пароль' : 'Подтвердите email'}">Подтвердите email</h1>
+        <p class="auth-intro" th:text="${resetMode ? 'Введите код из письма и задайте новый пароль.' : 'Введите 8-значный код из письма TaskFlow.'}"></p>
+        <div class="flash success" role="status" th:if="${notice}" th:text="${notice}"></div>
+        <div class="flash error" role="alert" th:if="${formError}" th:text="${formError}"></div>
+
+        <form class="stack-form" method="post" th:object="${codeForm}"
+              th:action="${resetMode} ? @{/reset-password} : @{/confirm-email}">
+          <div class="form-errors" th:if="${#fields.hasAnyErrors()}" role="alert">
+            <p th:each="error : ${#fields.allErrors()}" th:text="${error}"></p>
+          </div>
+          <label>Email
+            <input th:field="*{email}" type="email" autocomplete="email" required maxlength="254" />
+          </label>
+          <label>Код из письма
+            <input th:field="*{code}" type="text" inputmode="numeric" autocomplete="one-time-code"
+                   pattern="[0-9]{8}" minlength="8" maxlength="8" required />
+          </label>
+          <th:block th:if="${resetMode}">
+            <label>Новый пароль
+              <input th:field="*{newPassword}" type="password" autocomplete="new-password" minlength="8" maxlength="72" required />
+            </label>
+            <label>Повторите пароль
+              <input th:field="*{confirmPassword}" type="password" autocomplete="new-password" minlength="8" maxlength="72" required />
+            </label>
+          </th:block>
+          <button type="submit" class="button primary auth-submit">
+            <span th:text="${resetMode ? 'Сменить пароль' : 'Подтвердить email'}"></span>
+            <i data-lucide="arrow-right"></i>
+          </button>
+          <button type="submit" class="button secondary" th:if="${!resetMode && mailConfigured}"
+                  th:formaction="@{/confirm-email/resend}" formnovalidate>Запросить новый код</button>
+        </form>
+        <div class="auth-links">
+          <a href="/forgot-password" th:if="${resetMode && mailConfigured}">Запросить новый код</a>
+          <a href="/login">Ко входу</a>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

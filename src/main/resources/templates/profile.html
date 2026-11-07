@@ -1,0 +1,117 @@
+<!doctype html>
+<html
+  lang="ru"
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{fragments/layout :: layout(~{::main})}"
+>
+  <main>
+    <section class="page-heading">
+      <div>
+        <h1>Профиль</h1>
+        <p>Имя, почта и пароль вашего аккаунта.</p>
+      </div>
+    </section>
+    <div class="profile-layout">
+      <section class="panel profile-summary">
+        <span
+          class="avatar avatar-large"
+          th:text="${#strings.toUpperCase(#strings.substring(currentUser.username, 0, 1))}"
+        ></span>
+        <h2 th:text="${currentUser.username}"></h2>
+        <p th:text="${currentUser.email}"></p>
+        <span class="account-badge"
+          ><i data-lucide="shield-check"></i>Личный аккаунт</span
+        >
+        <p
+          class="muted profile-since"
+          th:text="'С нами с ' + ${#temporals.format(currentUser.createdAt.atZone(appZone), 'd MMMM yyyy')}"
+        ></p>
+        <form th:action="@{/logout}" method="post">
+          <button type="submit" class="button secondary">
+            <i data-lucide="log-out"></i>Выйти
+          </button>
+        </form>
+      </section>
+      <div class="profile-forms">
+        <section class="panel settings-panel">
+          <h2>Основная информация</h2>
+          <form
+            th:action="@{/profile}"
+            method="post"
+            th:object="${profileForm}"
+            class="stack-form"
+          >
+            <div
+              class="form-errors"
+              th:if="${#fields.hasAnyErrors()}"
+              role="alert"
+            >
+              <p th:each="e : ${#fields.allErrors()}" th:text="${e}"></p>
+            </div>
+            <label
+              >Как вас называть<input
+                th:field="*{username}"
+                required
+                maxlength="60"
+                autocomplete="name" /></label
+            ><label
+              >Email<input
+                type="email"
+                th:value="${currentUser.email}"
+                readonly /></label
+            ><button class="button primary" type="submit">
+              Сохранить изменения
+            </button>
+          </form>
+        </section>
+        <section class="panel settings-panel">
+          <h2>Изменить пароль</h2>
+          <p class="muted">После изменения нужно будет войти снова.</p>
+          <form
+            th:action="@{/profile/password}"
+            method="post"
+            th:object="${passwordForm}"
+            class="stack-form"
+          >
+            <div
+              class="form-errors"
+              th:if="${#fields.hasAnyErrors()}"
+              role="alert"
+            >
+              <p th:each="e : ${#fields.allErrors()}" th:text="${e}"></p>
+            </div>
+            <label
+              >Текущий пароль<input
+                type="password"
+                th:field="*{currentPassword}"
+                autocomplete="current-password"
+                required
+            /></label>
+            <div class="form-grid">
+              <label
+                >Новый пароль<input
+                  type="password"
+                  th:field="*{newPassword}"
+                  autocomplete="new-password"
+                  minlength="8"
+                  maxlength="72"
+                  required /></label
+              ><label
+                >Повторите пароль<input
+                  type="password"
+                  th:field="*{confirmPassword}"
+                  autocomplete="new-password"
+                  minlength="8"
+                  maxlength="72"
+                  required
+              /></label>
+            </div>
+            <button class="button secondary" type="submit">
+              <i data-lucide="key-round"></i>Изменить пароль
+            </button>
+          </form>
+        </section>
+      </div>
+    </div>
+  </main>
+</html>

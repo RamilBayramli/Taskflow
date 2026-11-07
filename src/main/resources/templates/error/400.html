@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragments/layout :: head('Проверьте запрос')}"></head>
+  <body class="error-body">
+    <main class="error-content">
+      <img src="/icons/logo.svg" width="48" height="48" alt="TaskFlow" /><span
+        class="eyebrow"
+        >400 · НЕКОРРЕКТНЫЙ ЗАПРОС</span
+      >
+      <h1>Не удалось открыть страницу</h1>
+      <p>Проверьте дату или параметры фильтра и попробуйте снова.</p>
+      <a href="/dashboard" class="button primary">Вернуться к обзору</a>
+    </main>
+  </body>
+</html>

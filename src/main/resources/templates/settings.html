@@ -1,0 +1,75 @@
+<!doctype html>
+<html
+  lang="ru"
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{fragments/layout :: layout(~{::main})}"
+>
+  <main>
+    <section class="page-heading">
+      <div>
+        <h1>Настройки</h1>
+        <p>Оформление и аккаунт.</p>
+      </div>
+    </section>
+    <div class="settings-layout">
+      <section class="panel settings-panel">
+        <div class="section-heading">
+          <div>
+            <h2>Внешний вид</h2>
+            <p class="muted">Выбранная тема сохраняется в этом браузере.</p>
+          </div>
+          <i data-lucide="palette"></i>
+        </div>
+        <div class="theme-options">
+          <label class="theme-option"
+            ><input type="radio" name="theme" value="light" /><span
+              class="theme-preview light-preview"
+              ><span></span><span></span><span></span></span
+            ><strong><i data-lucide="sun"></i>Светлая</strong></label
+          ><label class="theme-option"
+            ><input type="radio" name="theme" value="dark" /><span
+              class="theme-preview dark-preview"
+              ><span></span><span></span><span></span></span
+            ><strong><i data-lucide="moon"></i>Тёмная</strong></label
+          ><label class="theme-option"
+            ><input type="radio" name="theme" value="system" /><span
+              class="theme-preview system-preview"
+              ><span></span><span></span><span></span></span
+            ><strong><i data-lucide="monitor"></i>Как в системе</strong></label
+          >
+        </div>
+        <p class="saved-preference" id="theme-status" role="status"></p>
+      </section>
+      <section class="panel settings-panel" th:unless="${androidApp}">
+        <div class="section-heading">
+          <div>
+            <h2>Веб-приложение</h2>
+          </div>
+          <i data-lucide="smartphone"></i>
+        </div>
+        <button class="button primary install-app" type="button" hidden>
+          <i data-lucide="download"></i>Установить приложение
+        </button>
+        <p class="install-help muted">
+          В Chrome откройте меню и выберите «Добавить на главный экран».
+        </p>
+      </section>
+      <section class="panel settings-panel">
+        <div class="section-heading">
+          <div>
+            <h2>Аккаунт</h2>
+            <p class="muted" th:text="${currentUser.email}"></p>
+          </div>
+          <a href="/profile" class="button secondary"
+            >Настроить профиль<i data-lucide="arrow-right"></i
+          ></a>
+        </div>
+        <form th:action="@{/logout}" method="post">
+          <button type="submit" class="button danger-ghost">
+            <i data-lucide="log-out"></i>Выйти из аккаунта
+          </button>
+        </form>
+      </section>
+    </div>
+  </main>
+</html>

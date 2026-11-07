@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- The WebView limits HTTP to the selected private address. -->
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

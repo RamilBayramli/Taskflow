@@ -1,0 +1,104 @@
+<!doctype html>
+<html
+  lang="ru"
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{fragments/layout :: layout(~{::main})}"
+>
+  <main>
+    <section class="page-heading">
+      <div>
+        <h1>Мои задачи</h1>
+        <p>Поиск и фильтры по сроку, приоритету и категории.</p>
+      </div>
+      <a class="button primary open-task" href="/tasks/new"
+        ><i data-lucide="plus"></i>Новая задача</a
+      >
+    </section>
+    <section class="panel tasks-panel">
+      <form method="get" action="/tasks" class="task-filters" id="task-filters">
+        <div class="filter-top">
+          <label class="search-field"
+            ><i data-lucide="search"></i
+            ><input
+              type="search"
+              name="q"
+              th:value="${q}"
+              placeholder="Поиск по названию и описанию"
+              aria-label="Поиск задач"
+              maxlength="300"
+            /><kbd>↵</kbd></label
+          ><label class="sort-select"
+            ><i data-lucide="arrow-down-wide-narrow"></i
+            ><select name="sort" aria-label="Сортировка">
+              <option value="due" th:selected="${sort == 'due'}">
+                По сроку
+              </option>
+              <option value="priority" th:selected="${sort == 'priority'}">
+                По приоритету
+              </option>
+              <option value="newest" th:selected="${sort == 'newest'}">
+                Сначала новые
+              </option>
+              <option value="title" th:selected="${sort == 'title'}">
+                По названию
+              </option>
+            </select></label
+          >
+        </div>
+        <div class="filter-bottom">
+          <div class="status-tabs" role="group" aria-label="Статус задач">
+            <label
+              th:each="item : ${ {'all':'Все', 'active':'Активные', 'completed':'Готово', 'today':'Сегодня', 'overdue':'Просрочено'} }"
+              ><input
+                type="radio"
+                name="status"
+                th:value="${item.key}"
+                th:checked="${status == item.key}" /><span
+                th:text="${item.value}"
+              ></span
+            ></label>
+          </div>
+          <div class="filter-selects">
+            <select name="category" aria-label="Фильтр по категории">
+              <option value="">Все категории</option>
+              <option
+                th:each="category : ${userCategories}"
+                th:value="${category.id}"
+                th:selected="${category.id == categoryFilter}"
+                th:text="${category.name}"
+              ></option></select
+            ><select name="priority" aria-label="Фильтр по приоритету">
+              <option value="">Все приоритеты</option>
+              <option
+                th:each="p : ${T(com.taskflow.entity.Priority).values()}"
+                th:value="${p}"
+                th:selected="${p == priorityFilter}"
+                th:text="${p.label}"
+              ></option></select
+            ><button
+              class="button secondary filter-submit"
+              type="submit"
+              aria-label="Применить фильтры"
+            >
+              <i data-lucide="sliders-horizontal"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+      <div class="list-caption">
+        <span th:text="'НАЙДЕНО ЗАДАЧ: ' + ${#lists.size(tasks)}"></span
+        ><a
+          href="/tasks"
+          th:if="${q != '' || status != 'all' || categoryFilter != null || priorityFilter != null}"
+          >Сбросить фильтры</a
+        >
+      </div>
+      <div th:replace="~{fragments/task-list :: list(${tasks})}"></div>
+      <a class="add-task-row open-task" href="/tasks/new"
+        ><i data-lucide="plus"></i>Добавить задачу<span class="keyboard-hint"
+          >N</span
+        ></a
+      >
+    </section>
+  </main>
+</html>

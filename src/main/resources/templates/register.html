@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragments/layout :: head('Регистрация')}"></head>
+  <body class="auth-body">
+    <div th:replace="~{fragments/auth :: story}"></div>
+    <main class="auth-main">
+      <a class="brand auth-mobile-brand" href="/login"
+        ><img src="/icons/logo.svg" width="32" height="32" alt="" />TaskFlow</a
+      >
+      <div class="auth-form-wrap">
+        <h1>Создать аккаунт</h1>
+        <p class="auth-intro">После регистрации введите код из письма, чтобы подтвердить адрес.</p>
+        <div class="flash error" th:unless="${mailConfigured}" role="status">
+          Регистрация временно недоступна. Отправка писем на сервере ещё не настроена.
+        </div>
+        <form
+          th:if="${mailConfigured}"
+          th:action="@{/register}"
+          method="post"
+          th:object="${registerForm}"
+          class="stack-form"
+        >
+          <div
+            class="form-errors"
+            th:if="${#fields.hasAnyErrors()}"
+            role="alert"
+          >
+            <p th:each="error : ${#fields.allErrors()}" th:text="${error}"></p>
+          </div>
+          <label
+            >Ваше имя<input
+              th:field="*{username}"
+              autocomplete="name"
+              placeholder="Как вас называть?"
+              required
+              maxlength="60" /></label
+          ><label
+            >Email<input
+              type="email"
+              th:field="*{email}"
+              autocomplete="username"
+              placeholder="you@example.com"
+              required
+              maxlength="254" /></label
+          ><label
+            >Пароль<span class="password-field"
+              ><input
+                type="password"
+                th:field="*{password}"
+                autocomplete="new-password"
+                minlength="8"
+                maxlength="72"
+                placeholder="Не менее 8 символов"
+                required /><button
+                type="button"
+                class="icon-button show-password"
+                aria-label="Показать пароль"
+              >
+                <i data-lucide="eye"></i></button></span></label
+          ><label
+            >Повторите пароль<input
+              type="password"
+              th:field="*{confirmPassword}"
+              autocomplete="new-password"
+              minlength="8"
+              maxlength="72"
+              placeholder="Ещё раз, чтобы без опечаток"
+              required /></label
+          ><button type="submit" class="button primary auth-submit">
+            Создать аккаунт<i data-lucide="arrow-right"></i>
+          </button>
+        </form>
+        <p class="auth-switch">Уже с нами? <a href="/login">Войти</a></p>
+        <div class="auth-links"><a href="/confirm-email">У меня уже есть код</a></div>
+      </div>
+      <footer class="auth-footer">
+        <span>© 2026 TaskFlow</span
+        ><button
+          class="icon-button theme-toggle"
+          type="button"
+          aria-label="Переключить тему"
+        >
+          <i data-lucide="sun-moon"></i>
+        </button>
+      </footer>
+    </main>
+  </body>
+</html>

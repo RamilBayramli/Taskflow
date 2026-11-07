@@ -1,0 +1,161 @@
+.focus-panel {
+  --focus-background: #173c31;
+  --focus-foreground: #f6f4ee;
+  --focus-accent: #d9efb2;
+  --focus-muted: #bfd2c5;
+  --focus-line: #537165;
+
+  min-width: 0;
+  padding: clamp(18px, 3vw, 26px);
+  border-radius: 16px;
+  background: var(--focus-background);
+  color: var(--focus-foreground);
+}
+
+.focus-panel .focus-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.focus-panel .focus-icon {
+  display: grid;
+  flex: 0 0 38px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid var(--focus-line);
+  border-radius: 10px;
+  color: var(--focus-accent);
+}
+
+.focus-panel .focus-icon svg {
+  width: 19px;
+  height: 19px;
+}
+
+.focus-panel h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.2;
+}
+
+.focus-panel .focus-heading p {
+  margin: 4px 0 0;
+  color: var(--focus-muted);
+  font-size: 0.8rem;
+}
+
+.focus-panel .focus-clock {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 14px;
+  margin: 22px 0 9px;
+}
+
+.focus-panel .focus-time {
+  font-size: clamp(2.35rem, 6vw, 3.1rem);
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: -0.06em;
+  font-variant-numeric: tabular-nums;
+}
+
+.focus-panel .focus-status {
+  color: var(--focus-muted);
+  font-size: 0.75rem;
+}
+
+.focus-panel .focus-progress {
+  display: block;
+  width: 100%;
+  height: 4px;
+  margin: 0 0 20px;
+  overflow: hidden;
+  appearance: none;
+  border: 0;
+  border-radius: 4px;
+  background: var(--focus-line);
+  color: var(--focus-accent);
+}
+
+.focus-panel .focus-progress::-webkit-progress-bar {
+  background: var(--focus-line);
+}
+
+.focus-panel .focus-progress::-webkit-progress-value {
+  background: var(--focus-accent);
+}
+
+.focus-panel .focus-progress::-moz-progress-bar {
+  background: var(--focus-accent);
+}
+
+.focus-panel .focus-target {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--focus-muted);
+  font-size: 0.75rem;
+}
+
+.focus-panel [data-focus-target] {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  color-scheme: dark;
+  border: 1px solid var(--focus-line);
+  border-radius: 9px;
+  background: #22483b;
+  color: var(--focus-foreground);
+  text-overflow: ellipsis;
+}
+
+.focus-panel [data-focus-target]::placeholder {
+  color: var(--focus-muted);
+}
+
+.focus-panel .focus-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.focus-panel .focus-actions button {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--focus-line);
+  border-radius: 9px;
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+
+.focus-panel .focus-toggle {
+  border-color: var(--focus-accent);
+  background: var(--focus-accent);
+  color: var(--focus-background);
+}
+
+.focus-panel .focus-toggle:hover {
+  background: #e8f7ce;
+}
+
+.focus-panel .focus-reset {
+  background: transparent;
+  color: var(--focus-foreground);
+}
+
+.focus-panel .focus-reset:hover:not(:disabled) {
+  background: #22483b;
+}
+
+.focus-panel .focus-reset:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.focus-panel :is(button, input, select):focus-visible {
+  outline: 2px solid var(--focus-accent);
+  outline-offset: 2px;
+}

@@ -1,0 +1,76 @@
+<!doctype html>
+<html
+  lang="ru"
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{fragments/layout :: layout(~{::main})}"
+>
+  <main>
+    <section class="page-heading">
+      <div>
+        <h1>Календарь</h1>
+        <p>Выберите дату, чтобы посмотреть задачи на этот день.</p>
+      </div>
+      <a href="/tasks/new" class="button primary open-task"
+        ><i data-lucide="plus"></i>Новая задача</a
+      >
+    </section>
+    <div class="calendar-layout">
+      <section class="panel full-calendar">
+        <div class="panel-heading">
+          <h2 th:text="${#temporals.format(month.atDay(1), 'LLLL yyyy')}"></h2>
+          <div class="calendar-controls">
+            <a href="/calendar" class="button secondary small">Сегодня</a
+            ><a
+              class="icon-button"
+              th:href="@{/calendar(month=${previousMonth})}"
+              aria-label="Предыдущий месяц"
+              ><i data-lucide="chevron-left"></i></a
+            ><a
+              class="icon-button"
+              th:href="@{/calendar(month=${nextMonth})}"
+              aria-label="Следующий месяц"
+              ><i data-lucide="chevron-right"></i
+            ></a>
+          </div>
+        </div>
+        <div class="calendar-weekdays">
+          <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span
+          ><span>Пт</span><span>Сб</span><span>Вс</span>
+        </div>
+        <div class="full-calendar-grid">
+          <a
+            th:each="day : ${calendarDays}"
+            th:href="@{/calendar(month=${month},day=${day.date})}"
+            th:classappend="(${day.today} ? 'today ' : '') + (${!day.inMonth} ? 'outside ' : '') + (${day.date == selectedDay} ? 'selected' : '')"
+            th:aria-label="${#temporals.format(day.date, 'd MMMM')} + ', задач: ' + ${day.count}"
+            ><span th:text="${day.date.dayOfMonth}"></span
+            ><small th:if="${day.count > 0}"
+              ><span class="day-dot"></span
+              ><span th:text="${day.count} + ' зад.'"></span></small
+          ></a>
+        </div>
+      </section>
+      <section class="panel calendar-agenda">
+        <div class="panel-heading">
+          <div>
+            <span
+              class="eyebrow"
+              th:text="${#temporals.format(selectedDay, 'EEEE')}"
+            ></span>
+            <h2 th:text="${#temporals.format(selectedDay, 'd MMMM')}"></h2>
+          </div>
+          <span class="stat-icon accent"
+            ><i data-lucide="calendar-check-2"></i
+          ></span>
+        </div>
+        <div th:replace="~{fragments/task-list :: list(${tasks})}"></div>
+        <a
+          href="/tasks/new"
+          class="add-task-row open-task"
+          th:attr="data-date=${selectedDay}"
+          ><i data-lucide="plus"></i>Задача на этот день</a
+        >
+      </section>
+    </div>
+  </main>
+</html>

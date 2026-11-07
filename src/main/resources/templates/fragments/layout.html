@@ -1,0 +1,279 @@
+<!doctype html>
+<html
+  lang="ru"
+  xmlns:th="http://www.thymeleaf.org"
+  th:fragment="layout(content)"
+>
+  <head th:fragment="head(title)">
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title th:text="${title != null ? title : pageTitle} + ' · TaskFlow'">
+      TaskFlow
+    </title>
+    <meta name="theme-color" content="#F6F4EE" />
+    <meta
+      name="description"
+      content="Личный планировщик с задачами, календарём и таймером фокуса."
+    />
+    <meta
+      name="csrf-token"
+      th:if="${_csrf != null}"
+      th:content="${_csrf.token}"
+    />
+    <meta
+      name="csrf-header"
+      th:if="${_csrf != null}"
+      th:content="${_csrf.headerName}"
+    />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="/icons/logo.svg" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <script src="/js/theme.js"></script>
+    <link rel="stylesheet" href="/css/app.css" />
+    <link rel="stylesheet" href="/css/planner.css" />
+    <link rel="stylesheet" href="/css/focus.css" />
+    <script src="/js/vendor/lucide.min.js" defer></script>
+    <script src="/js/app.js" defer></script>
+    <script src="/js/focus.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Основная навигация">
+        <a class="brand" href="/dashboard"
+          ><img src="/icons/logo.svg" width="32" height="32" alt="" /><span>TaskFlow</span></a>
+        <span class="workspace-label">ЛИЧНОЕ ПРОСТРАНСТВО</span>
+        <nav class="side-nav">
+          <a
+            href="/dashboard"
+            th:classappend="${path == '/dashboard'} ? 'active'"
+            ><i data-lucide="sun"></i>Сегодня</a
+          >
+          <a
+            href="/tasks"
+            th:classappend="${#strings.startsWith(path, '/tasks')} ? 'active'"
+            ><i data-lucide="circle-check"></i>Мои задачи<span
+              class="nav-count"
+              th:text="${activeCount}"
+              >0</span
+            ></a
+          >
+          <a href="/calendar" th:classappend="${path == '/calendar'} ? 'active'"
+            ><i data-lucide="calendar-days"></i>Календарь</a
+          >
+          <a
+            href="/categories"
+            th:classappend="${path == '/categories'} ? 'active'"
+            ><i data-lucide="shapes"></i>Категории</a
+          >
+        </nav>
+        <div class="sidebar-projects">
+          <span class="workspace-label">МОИ КАТЕГОРИИ</span
+          ><a
+            href="/categories"
+            class="icon-button"
+            aria-label="Добавить категорию"
+            ><i data-lucide="plus"></i
+          ></a>
+        </div>
+        <nav class="category-nav">
+          <a
+            th:each="category : ${userCategories}"
+            th:href="@{/tasks(category=${category.id})}"
+            ><span
+              class="color-dot"
+              th:style="'--category-color:' + ${category.color}"
+            ></span
+            ><span th:text="${category.name}"></span
+          ></a>
+        </nav>
+        <div class="sidebar-bottom">
+          <a
+            class="settings-link"
+            href="/settings"
+            th:classappend="${path == '/settings'} ? 'active'"
+            ><i data-lucide="settings-2"></i>Настройки</a
+          >
+          <a class="user-link" href="/profile"
+            ><span
+              class="avatar"
+              th:text="${#strings.toUpperCase(#strings.substring(currentUser.username, 0, 1))}"
+              >А</span
+            ><span class="user-info"
+              ><strong th:text="${currentUser.username}"></strong
+              ><small>Личный аккаунт</small></span
+            ><i data-lucide="chevrons-up-down"></i
+          ></a>
+        </div>
+      </aside>
+      <div class="main-shell">
+        <header class="topbar">
+          <div class="breadcrumb">
+            <span>Моё пространство</span><i data-lucide="chevron-right"></i
+            ><strong th:text="${pageTitle}">Обзор</strong>
+          </div>
+          <a href="/dashboard" class="mobile-brand"
+            ><img
+              src="/icons/logo.svg"
+              width="28"
+              height="28"
+              alt=""
+            />TaskFlow</a
+          >
+          <div class="topbar-actions">
+            <button
+              class="icon-button theme-toggle"
+              type="button"
+              aria-label="Переключить тему"
+            >
+              <i data-lucide="sun-moon"></i>
+            </button>
+            <div class="notification-wrap">
+              <button
+                class="icon-button notification-toggle"
+                type="button"
+                aria-expanded="false"
+                aria-controls="reminders"
+                aria-label="Напоминания"
+              >
+                <i data-lucide="bell"></i
+                ><span
+                  class="notification-dot"
+                  th:if="${!#lists.isEmpty(reminders)}"
+                ></span>
+              </button>
+              <section class="notification-panel" id="reminders" hidden>
+                <div class="section-heading">
+                  <h3>Напоминания</h3>
+                  <i data-lucide="bell"></i>
+                </div>
+                <p class="muted" th:if="${#lists.isEmpty(reminders)}">
+                  Срочных задач нет. Можно выдохнуть.
+                </p>
+                <a
+                  th:each="task : ${reminders}"
+                  th:href="@{/tasks/{id}/edit(id=${task.id})}"
+                  ><strong th:text="${task.title}"></strong
+                  ><small
+                    th:text="${task.isOverdue(today)} ? 'Срок прошёл · ' + ${#temporals.format(task.dueDate, 'd MMM')} : 'Сегодня'"
+                  ></small
+                ></a>
+              </section>
+            </div>
+            <span class="topbar-divider"></span
+            ><a
+              href="/profile"
+              class="avatar avatar-small"
+              th:text="${#strings.toUpperCase(#strings.substring(currentUser.username, 0, 1))}"
+              aria-label="Открыть профиль"
+              >А</a
+            >
+          </div>
+        </header>
+        <div class="page-content">
+          <div class="flash success" role="status" th:if="${success}">
+            <i data-lucide="circle-check"></i><span th:text="${success}"></span
+            ><button class="icon-button dismiss-flash" aria-label="Закрыть">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+          <div
+            class="flash error"
+            role="alert"
+            th:if="${error}"
+            th:text="${error}"
+          ></div>
+          <th:block th:replace="${content}"></th:block>
+        </div>
+        <footer class="page-footer"><span>TaskFlow</span></footer>
+      </div>
+    </div>
+    <nav class="bottom-nav" aria-label="Мобильная навигация">
+      <a href="/dashboard" th:classappend="${path == '/dashboard'} ? 'active'"
+        ><i data-lucide="sun"></i><span>Сегодня</span></a
+      ><a
+        href="/tasks"
+        th:classappend="${#strings.startsWith(path, '/tasks')} ? 'active'"
+        ><i data-lucide="circle-check"></i><span>Задачи</span></a
+      ><a href="/calendar" th:classappend="${path == '/calendar'} ? 'active'"
+        ><i data-lucide="calendar-days"></i><span>Календарь</span></a
+      ><a
+        href="/categories"
+        th:classappend="${path == '/categories'} ? 'active'"
+        ><i data-lucide="shapes"></i><span>Категории</span></a
+      ><a
+        href="/settings"
+        th:classappend="${path == '/settings' || path == '/profile'} ? 'active'"
+        ><i data-lucide="settings-2"></i><span>Ещё</span></a
+      >
+    </nav>
+    <a class="fab open-task" href="/tasks/new" aria-label="Новая задача" th:if="${path != '/dashboard'}"
+      ><i data-lucide="plus"></i
+    ></a>
+    <dialog id="quick-task" class="task-dialog">
+      <div class="dialog-handle"></div>
+      <div class="section-heading">
+        <div>
+          <h2>Новая задача</h2>
+        </div>
+        <button
+          type="button"
+          class="icon-button close-dialog"
+          aria-label="Закрыть"
+        >
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form method="post" th:action="@{/tasks}" class="stack-form">
+        <label
+          >Название<input
+            name="title"
+            placeholder="Что нужно сделать?"
+            maxlength="160"
+            required
+            autofocus /></label
+        ><label
+          >Описание <span class="optional">необязательно</span
+          ><textarea
+            name="description"
+            maxlength="4000"
+            rows="3"
+            placeholder="Детали, ссылки, мысли…"
+          ></textarea>
+        </label>
+        <div class="form-grid">
+          <label>Срок<input type="date" name="dueDate" /></label
+          ><label
+            >Приоритет<select name="priority">
+              <option value="LOW">Низкий</option>
+              <option value="MEDIUM" selected>Средний</option>
+              <option value="HIGH">Высокий</option>
+            </select></label
+          >
+        </div>
+        <label
+          >Категория<select name="categoryId">
+            <option value="">Без категории</option>
+            <option
+              th:each="category : ${userCategories}"
+              th:value="${category.id}"
+              th:text="${category.name}"
+            ></option></select
+        ></label>
+        <div class="form-actions">
+          <button type="button" class="button secondary close-dialog">
+            Отмена</button
+          ><button class="button primary" type="submit">
+            <i data-lucide="plus"></i>Создать задачу
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <div id="connection-status" class="connection-status" role="status" hidden>
+      <i data-lucide="wifi-off"></i>Нет соединения. Изменения доступны после
+      подключения.
+    </div>
+  </body>
+</html>

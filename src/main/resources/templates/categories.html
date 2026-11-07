@@ -1,0 +1,98 @@
+<!doctype html>
+<html
+  lang="ru"
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{fragments/layout :: layout(~{::main})}"
+>
+  <main>
+    <section class="page-heading">
+      <div>
+        <h1>Категории</h1>
+        <p>Группируйте задачи по проектам и темам.</p>
+      </div>
+    </section>
+    <div class="categories-layout">
+      <section class="category-grid">
+        <article
+          class="panel category-card"
+          th:each="category : ${userCategories}"
+          th:style="'--category-color:' + ${category.color}"
+        >
+          <div class="category-card-top">
+            <span class="category-folder"><i data-lucide="folder"></i></span
+            ><a
+              th:href="@{/tasks(category=${category.id})}"
+              class="icon-button"
+              aria-label="Посмотреть задачи категории"
+              ><i data-lucide="arrow-up-right"></i
+            ></a>
+          </div>
+          <a th:href="@{/tasks(category=${category.id})}"
+            ><h2 th:text="${category.name}"></h2>
+            <p
+              th:text="'Задач: ' + ${categoryCounts.getOrDefault(category.id, 0L)}"
+            ></p
+          ></a>
+          <details class="category-editor">
+            <summary><i data-lucide="pencil"></i>Редактировать</summary>
+            <form
+              method="post"
+              th:action="@{/categories/{id}(id=${category.id})}"
+              class="stack-form compact"
+            >
+              <label
+                >Название<input
+                  name="name"
+                  th:value="${category.name}"
+                  required
+                  maxlength="40" /></label
+              ><label class="color-input-label"
+                >Цвет<input
+                  type="color"
+                  name="color"
+                  th:value="${category.color}" /></label
+              ><button class="button secondary small" type="submit">
+                Сохранить
+              </button>
+            </form>
+            <form
+              method="post"
+              th:action="@{/categories/{id}/delete(id=${category.id})}"
+              data-confirm="Удалить категорию? Задачи останутся без категории."
+            >
+              <button class="button danger-ghost small" type="submit">
+                <i data-lucide="trash-2"></i>Удалить категорию
+              </button>
+            </form>
+          </details>
+        </article>
+        <div th:if="${#lists.isEmpty(userCategories)}" class="empty-state">
+          <i data-lucide="folder-plus"></i>
+          <h3>Создайте первую категорию</h3>
+          <p>Например, «Работа» или «Мои проекты».</p>
+        </div>
+      </section>
+      <section class="panel new-category">
+        <span class="stat-icon accent"><i data-lucide="folder-plus"></i></span>
+        <h2>Новая категория</h2>
+        <p class="muted">Отдельное место для нового направления.</p>
+        <form method="post" th:action="@{/categories}" class="stack-form">
+          <label
+            >Название<input
+              name="name"
+              placeholder="Например, Работа"
+              required
+              maxlength="40" /></label
+          ><label class="color-input-label"
+            >Цвет категории<input
+              type="color"
+              name="color"
+              value="#5558E8" /></label
+          ><button class="button primary" type="submit">
+            <i data-lucide="plus"></i>Создать категорию
+          </button>
+        </form>
+      </section>
+    </div>
+  </main>
+</html>

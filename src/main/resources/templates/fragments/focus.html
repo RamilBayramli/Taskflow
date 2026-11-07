@@ -1,0 +1,41 @@
+<section
+  class="focus-panel"
+  xmlns:th="http://www.thymeleaf.org"
+  th:fragment="panel(tasks)"
+  th:attr="data-focus-user=${currentUser.id}"
+  aria-labelledby="focus-title"
+  hidden
+>
+  <div class="focus-heading">
+    <span class="focus-icon" aria-hidden="true"><i data-lucide="scan"></i></span>
+    <div>
+      <h2 id="focus-title">Фокус</h2>
+      <p>25 минут на одну задачу</p>
+    </div>
+  </div>
+
+  <div class="focus-clock">
+    <span class="focus-time" data-focus-time role="timer">25:00</span>
+    <span class="focus-status" data-focus-status role="status">Готов к запуску</span>
+  </div>
+  <progress class="focus-progress" data-focus-progress max="1500" value="0" aria-label="Прогресс сессии"></progress>
+
+  <label class="focus-target" for="focus-target">Задача на сессию</label>
+  <select id="focus-target" data-focus-target th:if="${!#lists.isEmpty(tasks)}">
+    <option value="">Таймер без задачи</option>
+    <option th:each="task : ${tasks}" th:value="${task.id}" th:text="${task.title}"></option>
+  </select>
+  <input
+    id="focus-target"
+    data-focus-target
+    th:if="${#lists.isEmpty(tasks)}"
+    type="text"
+    maxlength="160"
+    placeholder="Чем займётесь?"
+  />
+
+  <div class="focus-actions">
+    <button class="focus-toggle" data-focus-toggle type="button">Начать</button>
+    <button class="focus-reset" data-focus-reset type="button" disabled>Сбросить</button>
+  </div>
+</section>

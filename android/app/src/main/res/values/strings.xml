@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TaskFlow</string>
+    <string name="default_server" translatable="false">http://192.168.1.69:8080</string>
+    <string name="server_address">Адрес сервера</string>
+    <string name="server_address_help">Введите адрес TaskFlow на компьютере. Для подключения по Wi-Fi телефон и компьютер должны быть в одной сети.</string>
+    <string name="server_address_hint">http://192.168.1.69:8080</string>
+    <string name="server_address_invalid">Укажите адрес с http:// или https://, без пути. Для HTTP подойдёт локальный IP или localhost.</string>
+    <string name="reset_address">По умолчанию</string>
+    <string name="connect">Подключиться</string>
+    <string name="cancel">Отмена</string>
+    <string name="retry">Повторить</string>
+    <string name="change_address">Изменить адрес</string>
+    <string name="connection_title">Не удалось открыть TaskFlow</string>
+    <string name="connection_error">Проверьте, что TaskFlow запущен на компьютере и телефон подключён к той же Wi-Fi сети.</string>
+    <string name="connection_timeout">Сервер не успел ответить. Проверьте подключение и попробуйте ещё раз.</string>
+    <string name="server_error">Сервер вернул ошибку %1$d. Проверьте, запущен ли TaskFlow на компьютере.</string>
+    <string name="certificate_error">Телефон не доверяет сертификату этого сервера. Проверьте адрес и сертификат.</string>
+    <string name="outside_taskflow">Ссылка ведёт на другой сервер</string>
+    <string name="webview_unavailable">Обновите Android System WebView или Chrome, затем откройте приложение снова.</string>
+</resources>

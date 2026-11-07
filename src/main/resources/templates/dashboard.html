@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout(~{::main})}">
+  <main class="planner">
+    <header class="planner-heading">
+      <div>
+        <time class="planner-date" th:datetime="${today}" th:text="${#temporals.format(today, 'EEEE, d MMMM')}">
+          Суббота, 7 ноября
+        </time>
+        <h1>Сегодня</h1>
+        <p>Привет, <span th:text="${currentUser.username}">Александр</span>.</p>
+      </div>
+      <div class="planner-actions">
+        <a class="button secondary" href="#focus"><i data-lucide="timer"></i>Фокус</a>
+        <a class="button primary open-task" href="/tasks/new"><i data-lucide="plus"></i>Задача</a>
+      </div>
+    </header>
+
+    <div class="planner-columns">
+      <div class="planner-agenda">
+        <section class="agenda-progress" aria-label="Прогресс за день">
+          <div class="agenda-progress-label">
+            <span>Готово сегодня</span>
+            <strong th:text="|${stats.dailyDone} из ${stats.dailyTotal}|">0 из 0</strong>
+          </div>
+          <progress max="100" th:value="${stats.dailyPercent}" aria-label="Доля выполненных задач на сегодня"></progress>
+        </section>
+
+        <section class="agenda-sheet" aria-labelledby="agenda-title">
+          <div class="agenda-heading">
+            <h2 id="agenda-title" th:text="${stats.dailyTotal > 0 ? 'План на день' : 'Ближайшие задачи'}">План на день</h2>
+            <a class="text-link" th:href="${stats.dailyTotal > 0 ? '/tasks?status=today' : '/tasks'}">
+              Все задачи <i data-lucide="arrow-right"></i>
+            </a>
+          </div>
+          <div th:replace="~{fragments/task-list :: list(${stats.dailyTotal > 0 ? stats.todayTasks : stats.upcoming})}"></div>
+          <a class="add-task-row open-task" href="/tasks/new" th:if="${stats.dailyTotal > 0 || !#lists.isEmpty(stats.upcoming)}">
+            <i data-lucide="plus"></i>Добавить задачу<span class="keyboard-hint">N</span>
+          </a>
+        </section>
+
+        <section class="agenda-sheet agenda-next" th:if="${stats.dailyTotal > 0 && !#lists.isEmpty(stats.otherActive)}" aria-labelledby="next-title">
+          <div class="agenda-heading">
+            <h2 id="next-title">Другие активные</h2>
+            <a class="text-link" href="/tasks?status=active">Открыть список <i data-lucide="arrow-right"></i></a>
+          </div>
+          <div th:replace="~{fragments/task-list :: list(${stats.otherActive})}"></div>
+        </section>
+
+        <nav class="planner-counts" aria-label="Сводка по всем задачам">
+          <a href="/tasks?status=active"><strong th:text="${stats.active}">0</strong><span>Активные</span></a>
+          <a href="/tasks?status=completed"><strong th:text="${stats.completed}">0</strong><span>Выполненные</span></a>
+          <a href="/tasks?status=overdue"><strong th:text="${stats.overdue}">0</strong><span>Просроченные</span></a>
+        </nav>
+      </div>
+
+      <aside class="planner-aside" aria-label="Фокус и календарь">
+        <div id="focus" class="planner-focus">
+          <div th:replace="~{fragments/focus :: panel(${stats.activeTasks})}"></div>
+        </div>
+
+        <section class="mini-calendar planner-calendar" aria-labelledby="month-title">
+          <div class="agenda-heading">
+            <h2 id="month-title" th:text="${#temporals.format(month.atDay(1), 'LLLL yyyy')}">Ноябрь 2026</h2>
+            <a href="/calendar" class="icon-button" aria-label="Открыть календарь"><i data-lucide="arrow-up-right"></i></a>
+          </div>
+          <div class="calendar-weekdays" aria-hidden="true">
+            <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
+          </div>
+          <div class="mini-calendar-grid">
+            <a th:each="day : ${calendarDays}" th:href="@{/calendar(month=${month},day=${day.date})}"
+               th:classappend="${day.today ? 'today' : (!day.inMonth ? 'outside' : '')}"
+               th:aria-current="${day.today ? 'date' : null}"
+               th:aria-label="${#temporals.format(day.date, 'd MMMM')}">
+              <span th:text="${day.date.dayOfMonth}"></span>
+              <span class="day-dot" th:if="${day.count > 0}"></span>
+            </a>
+          </div>
+        </section>
+
+        <section class="planner-week" aria-labelledby="week-title">
+          <div class="agenda-heading">
+            <h2 id="week-title">На этой неделе</h2>
+            <span class="muted" th:text="|Готово: ${stats.weekCompleted}|">Готово: 0</span>
+          </div>
+          <div class="week-chart">
+            <div class="week-column" th:each="day : ${stats.week}"
+                 th:title="${#temporals.format(day.date, 'd MMM')} + ': ' + ${day.count}">
+              <span class="bar-value" th:text="${day.count}"></span>
+              <div class="bar-track">
+                <div class="bar" th:classappend="${day.today ? 'current' : ''}"
+                     th:style="|--bar-height:${day.count * 100 / stats.weekMaximum}%|"></div>
+              </div>
+              <span class="bar-label" th:text="${#temporals.format(day.date, 'EE')}"></span>
+            </div>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </main>
+</html>

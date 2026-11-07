@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.TaskFlow" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowBackground">@color/ivory</item>
+        <item name="android:colorAccent">@color/pine</item>
+        <item name="android:statusBarColor">@color/pine</item>
+        <item name="android:navigationBarColor">@color/pine</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <style name="TaskFlowAction">
+        <item name="android:minHeight">48dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+</resources>

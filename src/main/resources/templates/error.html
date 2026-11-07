@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragments/layout :: head('Что-то пошло не так')}"></head>
+  <body class="error-body">
+    <main class="error-content">
+      <img src="/icons/logo.svg" width="48" height="48" alt="TaskFlow" /><span
+        class="eyebrow"
+        >ПОПРОБУЕМ ЕЩЁ РАЗ</span
+      >
+      <h1>Не получилось выполнить действие</h1>
+      <p>Обновите страницу. Если сессия завершилась, войдите заново.</p>
+      <a href="/dashboard" class="button primary">Вернуться к обзору</a
+      ><a href="/login" class="text-link">Войти в аккаунт</a>
+    </main>
+  </body>
+</html>
